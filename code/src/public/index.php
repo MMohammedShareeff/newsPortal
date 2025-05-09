@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>المنصة الاخبارية</title>
-    <link rel="stylesheet" href="../assets/styles/style.css" />
+    <link rel="stylesheet" href="../../../assets/styles/style.css">
     <link rel="icon"  href="../assets/icons/portal-icon.png" type="image/png"/>
   </head>
   
@@ -110,7 +110,7 @@
             </div>
           </div>
         </section>
-        <section class="reading-section">
+        <section class="reading-section">2
           <div class="reading-section my-section">
               <div class="reading-column">
                   <div class="top-reading">
