@@ -1,7 +1,16 @@
 <?php
 
 namespace App\public;
+require_once '../../../vendor/autoload.php';
+    
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+    
 use App\user\User;
+use App\utils\Utils;
+
+Utils::createAdminIfNotExists();
 
 $mode = $_GET['mode'] ?? 'login'; 
 
@@ -9,24 +18,37 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
     if ($mode === 'login') {
         $email = $_POST['email'];
         $password = $_POST['password'];
-        echo "Logging in $email";
+
+        $user = User::getUserByEmail($email);
+        if($user && password_verify($password, $user['password'])){
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['username'] = $user['username']; 
+            header("Location: ../dashboards/Dashboard.php");
+            exit();
+        }
+        else{
+            echo "Invalid email or password";
+        }
+        
     } elseif ($mode === 'register') {
         $name = $_POST['name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
         $role = $_POST['account-type'];
 
-        $user = User::registerUser($name, $email, $password, $role);
-        if(user){
+        $user = new User($name, $email, $password, $role);
+        if($user->registerUser()){
             if(isset($role)){
-                header('location: ../dashboards/Dashboard.php');     
+                header('location: ../dashboards/Dashboard.php');
+                exit();     
             }
             else{
                 header('location: index.php');
+                exit();
             }
         }
         echo "Registering $name";
-       
     }
 }
 ?>
