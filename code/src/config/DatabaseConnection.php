@@ -1,7 +1,6 @@
 <?php
 
 namespace App\config;
-require_once dirname(__DIR__, 3) . '/vendor/autoload.php';
 
 use Dotenv\Dotenv;
 use PDO;
