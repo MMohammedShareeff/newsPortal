@@ -20,7 +20,10 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
         $password = $_POST['password'];
 
         $user = User::getUserByEmail($email);
-        if($user && password_verify($password, $user['password'])){
+        if($user['status'] !== 'ACTIVE'){
+            echo 'the admin did not activate your account yet!!';
+        }
+        elseif($user && password_verify($password, $user['password'])){
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['username'] = $user['username']; 

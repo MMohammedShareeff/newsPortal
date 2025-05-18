@@ -5,6 +5,7 @@ require_once '../../../vendor/autoload.php';
 
 use App\config\DatabaseConnection;
 use Dotenv\Dotenv;
+use App\utils\AppConstants;
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__, 3));
 $dotenv->load();
@@ -13,7 +14,7 @@ class Utils{
 
     private static $conn;
 
-    public static function initConnection() {
+    private static function ensureConnection() {
         if (!self::$conn) {
             self::$conn = DatabaseConnection::getConnection();
         }
@@ -40,7 +41,7 @@ class Utils{
     }
 
     public static function createAdminIfNotExists(): bool {
-        self::initConnection();
+        self::ensureConnection();
 
         $stmt = self::$conn->prepare("SELECT COUNT(*) FROM user WHERE role = 'ADMIN'");
         $stmt->execute();
@@ -49,14 +50,15 @@ class Utils{
         if ($count == 0) {
             $adminInfo = self::readAdminInfo(); 
 
-            $stmt = $conn->prepare("INSERT INTO user (name, email, password, role)
-                                    VALUES (:name, :email, :password, :role)");
+            $stmt = self::$conn->prepare("INSERT INTO user (name, email, password, role, status)
+                                    VALUES (:name, :email, :password, :role, :status)");
 
             return $stmt->execute([                  
                 ':name' => $adminInfo['name'],
                 ':email' => $adminInfo['email'],
                 ':password' => password_hash($adminInfo['password'], PASSWORD_BCRYPT), 
-                ':role' => 'ADMIN'
+                ':role' => 'ADMIN',
+                ':status' => 'ACTIVE'
             ]);
         }
         return false;
