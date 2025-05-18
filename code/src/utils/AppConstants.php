@@ -10,4 +10,5 @@ class AppConstants{
     public const STATUS_PUBLISHED = 'PUBLISHED';
     public const STATUS_REJECTED = 'REJECTED';
     public const STATUS_ACTIVE = 'ACTIVE';
+
 }
