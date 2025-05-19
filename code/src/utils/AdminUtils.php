@@ -1,44 +1,74 @@
 <?php
+
 namespace App\utils;
-require_once __DIR__ . '/../includes/db.php';
 
-function approveNews($id) {
-    global $conn;
-    $stmt = $conn->prepare("UPDATE news SET status='published' WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->close();
-}
+use App\config\DatabaseConnection;
+use PDO;
+use App\utils\AppConstants;
 
-function rejectNews($id) {
-    global $conn;
-    $stmt = $conn->prepare("DELETE FROM news WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->close();
-}
+class AdminUtils {
 
-function deleteUser($id) {
-    global $conn;
-    $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $stmt->close();
-}
+    private static $conn;
 
-function updateNews($id, $title, $content) {
-    global $conn;
-    $stmt = $conn->prepare("UPDATE news SET title=?, content=? WHERE id=?");
-    $stmt->bind_param("ssi", $title, $content, $id);
-    $stmt->execute();
-    $stmt->close();
-}
+    private static function ensureConnection(): void {
+        if (!self::$conn) {
+            self::$conn = DatabaseConnection::getConnection();
+        }
+    }
 
-function updateUser($id, $username, $role) {
-    global $conn;
-    $stmt = $conn->prepare("UPDATE users SET username=?, role=? WHERE id=?");
-    $stmt->bind_param("ssi", $username, $role, $id);
-    $stmt->execute();
-    $stmt->close();
+    public static function approveNews(int $id): bool {
+        self::ensureConnection();
+        $sql = "UPDATE news SET status = :status WHERE id = :id";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([
+            ':status' => AppConstants::STATUS_PUBLISHED,
+            ':id' => $id
+        ]);
+    }
+
+    public static function updateNews(int $id, string $title, string $content): bool {
+        self::ensureConnection();
+        $sql = "UPDATE news SET title = :title, body = :content WHERE id = :id";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([
+            ':title' => $title,
+            ':content' => $content,
+            ':id' => $id
+        ]);
+    }
+
+    public static function rejectNews(int $id): bool {
+        self::ensureConnection();
+        $sql = "DELETE FROM news WHERE id = :id";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public static function activateAccount(string $email): bool {
+        self::ensureConnection();
+        $sql = "UPDATE user SET status = :status WHERE email = :email";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([
+            ':status' => AppConstants::STATUS_ACTIVE,
+            ':email' => $email
+        ]);
+    }
+
+    public static function deleteUser(int $id): bool {
+        self::ensureConnection();
+        $sql = "DELETE FROM user WHERE id = :id";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([':id' => $id]);
+    }
+
+    public static function updateUser(int $id, string $name, string $role): bool {
+        self::ensureConnection();
+        $sql = "UPDATE user SET name = :name, role = :role WHERE id = :id";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([
+            ':name' => $name,
+            ':role' => $role,
+            ':id' => $id
+        ]);
+    }
 }
-?>

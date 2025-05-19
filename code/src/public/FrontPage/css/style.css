@@ -1,0 +1,58 @@
+html, body {
+    height: 100%;
+}
+.logo{
+    width: 50px;
+    height: 50px;
+}
+
+.smallImageNew{
+    width: 150px;
+    height: 75px;
+}
+.container2{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.container3{
+    margin-left: 5%;
+    margin-right: 5%;
+    
+}
+
+.card {
+    border-radius: 0 !important;
+    border:0px solid black !important;
+}
+
+h3{
+    border-bottom: 3px solid blue;
+}
+h1{
+    border-bottom: 3px solid blue;
+}
+a {
+    text-decoration: none !important;
+}
+ul {
+    padding-left: 0;
+    padding-right: 0; 
+}
+
+.social-icons {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
+}
+
+.social-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #001d3b;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 18px;
+}
