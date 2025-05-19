@@ -20,18 +20,32 @@ $news = $isEdit ? DashboardController::getNewsById($_GET['edit']) : ['title' => 
 
     <div class="mb-3">
         <label class="form-label">المحتوى</label>
-        <textarea name="body" class="form-control" rows="4" required><?= htmlspecialchars($news['body'] ?? '') ?></textarea>
+        <textarea name="body" class="form-control" rows="4"
+            required><?= htmlspecialchars($news['body'] ?? '') ?></textarea>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">الحالة</label>
-        <select name="status" class="form-select">
-            <option value="PENDING" <?= $news['status'] === 'PENDING' ? 'selected' : '' ?>>قيد المراجعة</option>
-            <option value="APPROVED" <?= $news['status'] === 'APPROVED' ? 'selected' : '' ?>>موافق عليه</option>
-        </select>
+        <label class="form-label">رابط الصورة</label>
+        <input type="url" name="image_url" class="form-control"
+            value="<?= htmlspecialchars($news['image_url'] ?? '') ?>" placeholder="https://example.com/image.jpg">
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        <?= $isEdit ? 'تحديث الخبر' : 'إنشاء الخبر' ?>
-    </button>
+
+    <<?php if ($_SESSION['role'] === 'EDITOR'): ?>
+            <div class="mb-3">
+                <label class="form-label">الحالة</label>
+                <select name="status" class="form-select">
+                    <option value="PENDING" <?= ($news['status'] ?? 'PENDING') === 'PENDING' ? 'selected' : '' ?>>قيد المراجعة
+                    </option>
+                    <option value="APPROVED" <?= ($news['status'] ?? 'PENDING') === 'APPROVED' ? 'selected' : '' ?>>موافق عليه
+                    </option>
+                </select>
+            </div>
+        <?php else: ?>
+            <input type="hidden" name="status" value="PENDING">
+        <?php endif; ?>
+
+        <button type="submit" class="btn btn-primary">
+            <?= $isEdit ? 'تحديث الخبر' : 'إنشاء الخبر' ?>
+        </button>
 </form>
