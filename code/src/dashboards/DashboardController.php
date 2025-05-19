@@ -5,7 +5,8 @@ namespace App\dashboards;
 use App\config\DatabaseConnection;
 use PDO;
 
-class DashboardController{
+class DashboardController
+{
     private static $conn;
 
     public static function getDashboardData($role, $userId)
@@ -14,16 +15,9 @@ class DashboardController{
         $data = [];
 
         $data['myNews'] = self::getNewsByAuthor($userId);
-
-        if ($role === 'ADMIN') {
-            $data['users'] = self::getAllUsers();
-            $data['allNews'] = self::getAllNews();
-            $data['pendingNews'] = self::getPendingNews();
-        }
-
-        if ($role === 'EDITOR') {
-            $data['pendingNews'] = self::getPendingNews();
-        }
+        $data['users'] = self::getAllUsers();
+        $data['allNews'] = self::getAllNews();
+        $data['pendingNews'] = self::getPendingNews();
 
         return $data;
     }
