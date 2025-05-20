@@ -1,3 +1,24 @@
+<?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+echo "Step 1: before require<br>";
+
+require_once '../../../../vendor/autoload.php';
+
+echo "Step 2: after require<br>";
+
+use App\config\DatabaseConnection;
+
+echo "Step 3: after use<br>";
+
+$pdo = DatabaseConnection::getConnection();
+
+echo "Step 4: after db connection<br>";
+
+?>
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 
@@ -76,142 +97,125 @@
       </div>
     </div>
   </nav>
-
+  
+ 
   <?php
+  $categoryName = $_GET['category'] ?? null;
 
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
+   if ($categoryName !== null) {
+    $stmt = $pdo->prepare("
+        SELECT news.*, category.name AS category_name 
+         FROM news 
+         JOIN category ON news.category_id = category.id 
+         WHERE category.name = ?
+       ORDER BY news.created_at DESC
+     ");
 
-  echo "Step 1: before require<br>";
+     $stmt->execute([$categoryName]);
+     $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  require_once __DIR__ . '/../../../../../vendor/autoload.php';
+     $arabicNames = [
+       'sport' => 'رياضة',
+      'politics' => 'سياسة',
+      'health' => 'صحة',
+     'economy' => 'اقتصاد',
+   ];
 
-  echo "Step 2: after require<br>";
+    $arabicCategoryName = $arabicNames[$categoryName] ?? $categoryName;
 
-  use App\config\DatabaseConnection;
+   echo '
+   <div class="container3 category sport">
+      <h1 style="width: fit-content" class="pt-3">' . $arabicCategoryName . '</h1>
+      <hr />
+      <div class="section mainSection row">
+   ';
 
-  echo "Step 3: after use<br>";
+    if (!empty($news)) {
+      $first = array_shift($news);
+      echo '
+       <div class="col-sm-8">
+           <div class="card-body">
+                 <img src="' . $first['image_url'] . '" alt="image" class="card-img-top" />
+                <div class="mb-3 mt-2">' . $arabicCategoryName . ' - ' . $first['country'] . '</div>
+               <div class="content card-text">
+                    <h2 class="pb-4">' . $first['title'] . '</h2>
+                   <p>' . $first['body'] . '</p>
+               </div>
+            </div>
+       </div>
+        ';
+    }
 
-  $pdo = DatabaseConnection::getConnection();
+    echo '<div class="col-sm-4">';
+    for ($i = 0; $i < 2 && !empty($news); $i++) {
+      $item = array_shift($news);
+      echo '
+        <div class="card-body">
+             <img src="' . $item['image_url'] . '" alt="image" class="card-img-top" />
+            <div class="mb-3 mt-2">' . $item['country'] . ' - ' . $arabicCategoryName . '</div>
+            <div class="content card-text">
+                <h2 class="pb-4">' . $item['title'] . '</h2>
+                <p>' . $item['body'] . '</p>
+             </div>
+         </div>
+        ';
+     }
 
-  echo "Step 4: after db connection<br>";
+     for ($i = 0; $i < 2 && !empty($news); $i++) {
+       $item = array_shift($news);
+      echo '
+        <div class="card">
+             <div class="row card-body">
+                <img class="col-sm-6" src="' . $item['image_url'] . '" alt="photo" />
+                 <div class="col-sm-6">
+                    <div class="text-muted mb-1">' . $arabicCategoryName . '</div>
+                   <p class="card-text">' . mb_substr($item['body'], 0, 100) . '...</p>
+               </div>
+           </div>
+       </div>
+        ';
+   }
+   echo '</div></div>';
 
-  // $categoryName = $_GET['category'] ?? null;
+    echo '<div class="otherNews row"><div class="col-sm-8">';
+   for ($i = 0; $i < 3 && !empty($news); $i++) {
+      $item = array_shift($news);
+      echo '
+        <div class="card">
+             <div class="row card-body">
+              <img class="col-sm-4" src="' . $item['image_url'] . '" alt="photo" />
+              <div class="col-sm-6">
+                   <div class="text-muted mb-2 pt-2">' . $arabicCategoryName . '</div>
+                  <div class="card-text">
+                      <h5 class="pb-2">' . $item['title'] . '</h5>
+                      <p>' . mb_substr($item['body'], 0, 100) . '...</p>
+                  </div>
+             </div>
+         </div>
+       </div>
+         ';
+    }
+   echo '</div>';
 
-  // if ($categoryName !== null) {
-  //   $stmt = $pdo->prepare("
-  //       SELECT news.*, category.name AS category_name 
-  //       FROM news 
-  //       JOIN category ON news.category_id = category.id 
-  //       WHERE category.name = ?
-  //       ORDER BY news.created_at DESC
-  //   ");
+    echo '
+    <div class="col-sm-4">
+       <div class="adsArea pt-5">
+           <div class="card">
+               <div class="card-body">
+                   <img src="./images/sunsetWallpaper.jpg" alt="image" class="card-img-bottom some" />
+                   <div class="imgDesc bg-light text-center">AD</div>
+              </div>
+           </div>
+       </div>
+    </div>
+    </div></div>';
+  } else {
+    echo '<div class="container3 pt-5"><h2 class="text-danger">لم يتم تحديد القسم</h2></div>';
+  } 
 
-  //   $stmt->execute([$categoryName]);
-  //   $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-  //   $arabicNames = [
-  //     'sport' => 'رياضة',
-  //     'politics' => 'سياسة',
-  //     'health' => 'صحة',
-  //     'economy' => 'اقتصاد',
-  //   ];
-
-  //   $arabicCategoryName = $arabicNames[$categoryName] ?? $categoryName;
-
-  //   echo '
-  //   <div class="container3 category sport">
-  //     <h1 style="width: fit-content" class="pt-3">' . $arabicCategoryName . '</h1>
-  //     <hr />
-  //     <div class="section mainSection row">
-  //   ';
-
-  //   if (!empty($news)) {
-  //     $first = array_shift($news);
-  //     echo '
-  //       <div class="col-sm-8">
-  //           <div class="card-body">
-  //               <img src="' . $first['image_url'] . '" alt="image" class="card-img-top" />
-  //               <div class="mb-3 mt-2">' . $arabicCategoryName . ' - ' . $first['country'] . '</div>
-  //               <div class="content card-text">
-  //                   <h2 class="pb-4">' . $first['title'] . '</h2>
-  //                   <p>' . $first['body'] . '</p>
-  //               </div>
-  //           </div>
-  //       </div>
-  //       ';
-  //   }
-
-  //   echo '<div class="col-sm-4">';
-  //   for ($i = 0; $i < 2 && !empty($news); $i++) {
-  //     $item = array_shift($news);
-  //     echo '
-  //       <div class="card-body">
-  //           <img src="' . $item['image_url'] . '" alt="image" class="card-img-top" />
-  //           <div class="mb-3 mt-2">' . $item['country'] . ' - ' . $arabicCategoryName . '</div>
-  //           <div class="content card-text">
-  //               <h2 class="pb-4">' . $item['title'] . '</h2>
-  //               <p>' . $item['body'] . '</p>
-  //           </div>
-  //       </div>
-  //       ';
-  //   }
-
-  //   for ($i = 0; $i < 2 && !empty($news); $i++) {
-  //     $item = array_shift($news);
-  //     echo '
-  //       <div class="card">
-  //           <div class="row card-body">
-  //               <img class="col-sm-6" src="' . $item['image_url'] . '" alt="photo" />
-  //               <div class="col-sm-6">
-  //                   <div class="text-muted mb-1">' . $arabicCategoryName . '</div>
-  //                   <p class="card-text">' . mb_substr($item['body'], 0, 100) . '...</p>
-  //               </div>
-  //           </div>
-  //       </div>
-  //       ';
-  //   }
-  //   echo '</div></div>';
-
-  //   echo '<div class="otherNews row"><div class="col-sm-8">';
-  //   for ($i = 0; $i < 3 && !empty($news); $i++) {
-  //     $item = array_shift($news);
-  //     echo '
-  //       <div class="card">
-  //           <div class="row card-body">
-  //               <img class="col-sm-4" src="' . $item['image_url'] . '" alt="photo" />
-  //               <div class="col-sm-6">
-  //                   <div class="text-muted mb-2 pt-2">' . $arabicCategoryName . '</div>
-  //                   <div class="card-text">
-  //                       <h5 class="pb-2">' . $item['title'] . '</h5>
-  //                       <p>' . mb_substr($item['body'], 0, 100) . '...</p>
-  //                   </div>
-  //               </div>
-  //           </div>
-  //       </div>
-  //       ';
-  //   }
-  //   echo '</div>';
-
-  //   echo '
-  //   <div class="col-sm-4">
-  //       <div class="adsArea pt-5">
-  //           <div class="card">
-  //               <div class="card-body">
-  //                   <img src="./images/sunsetWallpaper.jpg" alt="image" class="card-img-bottom some" />
-  //                   <div class="imgDesc bg-light text-center">AD</div>
-  //               </div>
-  //           </div>
-  //       </div>
-  //   </div>
-  //   </div></div>';
-  // } else {
-  //   echo '<div class="container3 pt-5"><h2 class="text-danger">لم يتم تحديد القسم</h2></div>';
-  // }
   ?>
 
-  <!-- <div class="container3 category sport">
+  <div class="container3 category sport">
     <h1 style="width: fit-content" class="pt-3">رياضة</h1>
     <hr />
 
@@ -829,9 +833,9 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 
-  <!-- <script src="./categorySelector.js"></script> -->
+   <script src="./categorySelector.js"></script>
 </body>
 <div class="footer bg-light border-top" style="padding: 0; margin: 0">
   <div class="container2">
