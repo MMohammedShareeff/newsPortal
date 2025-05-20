@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bootstrap Grid Example</title>
+    <title>News Portal</title>
     <link rel="stylesheet" href="./css/style.css" />
     <link
       rel="stylesheet"
@@ -42,25 +42,37 @@
                 <a
                   class="nav-link active text-white"
                   aria-current="page"
-                  href="/index.html"
+                  href="index.php"
                   >الرئيسية</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white" href="./politicsPage.html"
+                <a
+                  class="nav-link text-white"
+                  href="./category.php?category=politics"
                   >سياسة</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white" href="./economyPage.html"
+                <a
+                  class="nav-link text-white"
+                  href="./category.php?category=economy"
                   >اقتصاد</a
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white" href="./healthPage.html">صحة</a>
+                <a
+                  class="nav-link text-white"
+                  href="./category.php?category=health"
+                  >صحة</a
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link text-white" href="./sportPage.html">رياضة</a>
+                <a
+                  class="nav-link text-white"
+                  href="./category.php?category=sport"
+                  >رياضة</a
+                >
               </li>
             </ul>
           </div>
@@ -180,7 +192,7 @@
       </div>
 
       <div class="secondSection row section mt-4">
-        <div class="col-sm-4 mostReaded">
+        <div class="col-sm-5 mostReaded">
           <div style="width: fit-content">
             <h3>الأكثر قراءة</h3>
           </div>
@@ -212,7 +224,7 @@
             </li>
           </ul>
         </div>
-        <div class="col-sm-8 moreNewsSection">
+        <div class="col-sm-7 moreNewsSection">
           <div class="row">
             <div class="titlesBorder col" style="width: fit-content">
               <h3 style="width: fit-content">المزيد من الأخبار</h3>
