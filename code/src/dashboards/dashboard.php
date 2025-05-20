@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\dashboards;
@@ -7,6 +6,7 @@ namespace App\dashboards;
 require_once '../../../vendor/autoload.php';
 
 use App\dashboards\DashboardController;
+use App\category\Category;
 
 session_start();
 
@@ -43,6 +43,10 @@ $editId = $_GET['edit'] ?? null;
 
         <?php if ($formAction === 'edit_user' && $editId): ?>
             <?php include __DIR__ . '/templates/UserForm.php'; ?>
+        <?php endif; ?>
+
+        <?php if ($formAction === 'add_category' || ($formAction === 'edit_category' && $editId)): ?>
+            <?php include __DIR__ . '/templates/CategoryForm.php'; ?>
         <?php endif; ?>
 
         <?php if ($role === 'ADMIN'): ?>
@@ -82,6 +86,37 @@ $editId = $_GET['edit'] ?? null;
                     <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <h3 class="mt-5">إدارة الفئات</h3>
+            <a href="?form=add_category" class="btn btn-primary mb-2">إضافة فئة</a>
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الوصف</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $categories = Category::getAll();
+                    foreach ($categories as $category): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($category['name'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($category['description'] ?? '') ?></td>
+                            <td>
+                                <a href="?form=edit_category&edit=<?= htmlspecialchars($category['id'] ?? '') ?>"
+                                    class="btn btn-warning btn-sm">تعديل</a>
+                                <form action="actions/handle.php" method="GET" class="d-inline">
+                                    <input type="hidden" name="action" value="delete_category">
+                                    <input type="hidden" name="id" value="<?= htmlspecialchars($category['id'] ?? '') ?>">
+                                    <button class="btn btn-danger btn-sm">حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         <?php endif; ?>
 
         <?php if ($role == 'AUTHOR'): ?>
@@ -91,6 +126,7 @@ $editId = $_GET['edit'] ?? null;
                 <thead class="table-primary">
                     <tr>
                         <th>العنوان</th>
+                        <th>الفئة</th>
                         <th>الحالة</th>
                         <th>تاريخ النشر</th>
                         <th>الإجراءات</th>
@@ -99,9 +135,10 @@ $editId = $_GET['edit'] ?? null;
                 <tbody>
                     <?php foreach ($data['myNews'] as $news): ?>
                         <tr>
-                            <td><?= htmlspecialchars($news['title']) ?></td>
-                            <td><?= htmlspecialchars($news['status']) ?></td>
-                            <td><?= htmlspecialchars($news['date_posted']) ?></td>
+                            <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['category_name'] ?? 'غير مصنف') ?></td>
+                            <td><?= htmlspecialchars($news['status'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['date_posted'] ?? '') ?></td>
                             <td>
                                 <a href="?form=edit_news&edit=<?= $news['id'] ?>"
                                     class="btn btn-outline-primary btn-sm">تعديل</a>
@@ -124,6 +161,7 @@ $editId = $_GET['edit'] ?? null;
                     <tr>
                         <th>العنوان</th>
                         <th>رقم الكاتب</th>
+                        <th>الفئة</th>
                         <th>التاريخ</th>
                         <th>الإجراءات</th>
                     </tr>
@@ -131,9 +169,10 @@ $editId = $_GET['edit'] ?? null;
                 <tbody>
                     <?php foreach ($data['pendingNews'] as $news): ?>
                         <tr>
-                            <td><?= htmlspecialchars($news['title']) ?></td>
-                            <td><?= htmlspecialchars($news['author_id']) ?></td>
-                            <td><?= htmlspecialchars($news['date_posted']) ?></td>
+                            <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['author_id'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['category_name'] ?? 'غير مصنف') ?></td>
+                            <td><?= htmlspecialchars($news['date_posted'] ?? '') ?></td>
                             <td>
                                 <form action="actions/handle.php" method="GET" class="d-inline">
                                     <input type="hidden" name="action" value="approve_news">
@@ -152,12 +191,13 @@ $editId = $_GET['edit'] ?? null;
                 </tbody>
             </table>
 
-            <h3 class="mt-5">جميع الاخبار</h3>
+            <h3 class="mt-5">جميع الأخبار</h3>
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-warning">
                     <tr>
                         <th>العنوان</th>
                         <th>رقم الكاتب</th>
+                        <th>الفئة</th>
                         <th>التاريخ</th>
                         <th>الإجراءات</th>
                     </tr>
@@ -165,9 +205,10 @@ $editId = $_GET['edit'] ?? null;
                 <tbody>
                     <?php foreach ($data['allNews'] as $news): ?>
                         <tr>
-                            <td><?= htmlspecialchars($news['title']) ?></td>
-                            <td><?= htmlspecialchars($news['author_id']) ?></td>
-                            <td><?= htmlspecialchars($news['date_posted']) ?></td>
+                            <td><?= htmlspecialchars($news['title'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['author_id'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($news['category_name'] ?? 'غير مصنف') ?></td>
+                            <td><?= htmlspecialchars($news['date_posted'] ?? '') ?></td>
                             <td>
                                 <?php if ($news['status'] == 'PENDING'): ?>
                                     <form action="actions/handle.php" method="GET" class="d-inline">
@@ -190,7 +231,6 @@ $editId = $_GET['edit'] ?? null;
                 </tbody>
             </table>
         <?php endif; ?>
-
     </div>
 </body>
 
