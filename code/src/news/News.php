@@ -3,6 +3,7 @@ namespace App\news;
 
 use App\config\DatabaseConnection;
 use App\utils\AppConstants;
+use PDO;
 
 class News
 {
@@ -33,6 +34,24 @@ class News
         $this->status = $status;
         $this->image_url = $image_url;
         $this->id = $id;
+    }
+
+    public static function getNewsById($id)
+    {
+        self::ensureConnection();
+        $sql = "SELECT * FROM news WHERE id = ?";
+        $stmt = self::$conn->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function getLatestNews($category_id)
+    {
+        self::ensureConnection();
+        $sql = "SELECT * FROM news WHERE category_id = ? ORDER BY date_posted DESC LIMIT 5";
+        $stmt = self::$conn->prepare($sql);
+        $stmt->execute([$category_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function createNews(): bool
@@ -99,6 +118,31 @@ class News
             ':status' => AppConstants::STATUS_REJECTED,
             ':id' => $id
         ]);
+    }
+
+    public static function incrementViews($id)
+    {
+        self::ensureConnection();
+        $stmt = self::$conn->prepare("UPDATE news SET total_views = total_views + 1 WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+    }
+
+    public static function getMostCommentedNews()
+    {
+        self::ensureConnection();
+
+        $sql = "
+            SELECT n.*, COUNT(c.id) AS comment_count
+            FROM news n
+            JOIN comments c ON n.id = c.news_id
+            GROUP BY n.id
+            ORDER BY comment_count DESC
+            LIMIT 5;
+        ";
+
+        $stmt = self::$conn->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     private static function ensureConnection(): void
