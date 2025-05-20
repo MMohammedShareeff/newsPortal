@@ -59,7 +59,7 @@ class Utils
                 ':email' => $adminInfo['email'],
                 ':password' => password_hash($adminInfo['password'], PASSWORD_BCRYPT),
                 ':role' => 'ADMIN',
-                ':status' => 'ACTIVE'
+                ':status' => 'مفعل'
             ]);
         }
         return false;
