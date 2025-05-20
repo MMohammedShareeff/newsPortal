@@ -108,7 +108,7 @@ echo "Step 4: after db connection<br>";
          FROM news 
          JOIN category ON news.category_id = category.id 
          WHERE category.name = ?
-       ORDER BY news.created_at DESC
+       ORDER BY news.date_posted DESC
      ");
 
      $stmt->execute([$categoryName]);
@@ -215,7 +215,7 @@ echo "Step 4: after db connection<br>";
 
   ?>
 
-  <div class="container3 category sport">
+  <!-- <div class="container3 category sport">
     <h1 style="width: fit-content" class="pt-3">رياضة</h1>
     <hr />
 
@@ -833,7 +833,7 @@ echo "Step 4: after db connection<br>";
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
    <script src="./categorySelector.js"></script>
 </body>
