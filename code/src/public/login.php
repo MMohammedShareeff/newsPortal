@@ -2,38 +2,36 @@
 
 namespace App\public;
 require_once '../../../vendor/autoload.php';
-    
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-    
+
 use App\user\User;
 use App\utils\Utils;
 
 Utils::createAdminIfNotExists();
 
-$mode = $_GET['mode'] ?? 'login'; 
+$mode = $_GET['mode'] ?? 'login';
 
-if($_SERVER["REQUEST_METHOD"] === 'POST'){
+if ($_SERVER["REQUEST_METHOD"] === 'POST') {
     if ($mode === 'login') {
         $email = $_POST['email'];
         $password = $_POST['password'];
 
         $user = User::getUserByEmail($email);
-        if($user['status'] !== 'ACTIVE'){
+        if ($user['status'] !== 'مفعل') {
             echo 'the admin did not activate your account yet!!';
-        }
-        elseif($user && password_verify($password, $user['password'])){
+        } elseif ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
-            $_SESSION['username'] = $user['username']; 
+            $_SESSION['username'] = $user['username'];
             header("Location: ../dashboards/Dashboard.php");
             exit();
-        }
-        else{
+        } else {
             echo "Invalid email or password";
         }
-        
+
     } elseif ($mode === 'register') {
         $name = $_POST['name'];
         $email = $_POST['email'];
@@ -41,26 +39,22 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
         $role = $_POST['account-type'];
 
         $user = new User($name, $email, $password, $role);
-        if($user->registerUser()){
-            if(isset($role)){
-                header('location: ../dashboards/Dashboard.php');
-                exit();     
-            }
-            else{
-                header('location: index.php');
-                exit();
-            }
+        if (!$user->registerUser()) {
+            echo 'something wrong happend, failed to register your account';
+        } else {
+            header("Location: login.php");
         }
-        echo "Registering $name";
     }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title><?= ucfirst($mode) ?></title>
 </head>
+
 <body>
     <h1><?= ucfirst($mode) ?> Page</h1>
 
@@ -90,4 +84,5 @@ if($_SERVER["REQUEST_METHOD"] === 'POST'){
         <p>No account? <a href="?mode=register">Register here</a></p>
     <?php endif; ?>
 </body>
+
 </html>

@@ -14,10 +14,14 @@ class DashboardController
         self::ensureConnection();
         $data = [];
 
-        $data['myNews'] = self::getNewsByAuthor($userId);
-        $data['users'] = self::getAllUsers();
-        $data['allNews'] = self::getAllNews();
-        $data['pendingNews'] = self::getPendingNews();
+        if ($role === 'ADMIN') {
+            $data['users'] = self::getAllUsers();
+        } elseif ($role === 'AUTHOR') {
+            $data['myNews'] = self::getNewsByAuthor($userId);
+        } elseif ($role === 'EDITOR') {
+            $data['pendingNews'] = self::getPendingNews();
+            $data['allNews'] = self::getAllNews();
+        }
 
         return $data;
     }
@@ -25,7 +29,10 @@ class DashboardController
     public static function getNewsById($id)
     {
         self::ensureConnection();
-        $stmt = self::$conn->prepare("SELECT * FROM news WHERE id = ?");
+        $stmt = self::$conn->prepare("SELECT n.id, n.title, n.body, n.status, n.author_id, n.date_posted, n.image_url, n.category_id, c.name AS category_name 
+                                      FROM news n 
+                                      LEFT JOIN category c ON n.category_id = c.id 
+                                      WHERE n.id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -33,34 +40,48 @@ class DashboardController
     public static function getUserById($id)
     {
         self::ensureConnection();
-        $stmt = self::$conn->prepare("SELECT * FROM user WHERE id = ?");
+        $stmt = self::$conn->prepare("SELECT id, name, email, status, role FROM user WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     private static function getAllUsers()
     {
-        $stmt = self::$conn->query("SELECT * FROM user ORDER BY created_at DESC");
+        self::ensureConnection();
+        $stmt = self::$conn->query("SELECT id, name, email, status, role FROM user ORDER BY created_at DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private static function getAllNews()
     {
-        $stmt = self::$conn->query("SELECT * FROM news ORDER BY date_posted DESC");
+        self::ensureConnection();
+        $stmt = self::$conn->query("SELECT n.id, n.title, n.author_id, n.date_posted, n.status, n.image_url, n.category_id, c.name AS category_name 
+                                    FROM news n 
+                                    LEFT JOIN category c ON n.category_id = c.id 
+                                    ORDER BY n.date_posted DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private static function getPendingNews()
     {
-        $stmt = self::$conn->prepare("SELECT * FROM news WHERE status = 'PENDING'");
-        $stmt->execute();
+        self::ensureConnection();
+        $stmt = self::$conn->query("SELECT n.id, n.title, n.author_id, n.date_posted, n.status, n.image_url, n.category_id, c.name AS category_name 
+                                    FROM news n 
+                                    LEFT JOIN category c ON n.category_id = c.id 
+                                    WHERE n.status = 'PENDING' 
+                                    ORDER BY n.date_posted DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private static function getNewsByAuthor($authorId)
     {
-        $stmt = self::$conn->prepare("SELECT * FROM news WHERE author_id = :author_id");
-        $stmt->execute([':author_id' => $authorId]);
+        self::ensureConnection();
+        $stmt = self::$conn->prepare("SELECT n.id, n.title, n.author_id, n.date_posted, n.status, n.image_url, n.category_id, c.name AS category_name 
+                                      FROM news n 
+                                      LEFT JOIN category c ON n.category_id = c.id 
+                                      WHERE n.author_id = ? 
+                                      ORDER BY n.date_posted DESC");
+        $stmt->execute([$authorId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

@@ -26,12 +26,14 @@ if (!$user) {
 
     <div class="mb-3">
         <label class="form-label">الاسم</label>
-        <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($user['name'] ?? '') ?>" required>
+        <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($user['name'] ?? '') ?>"
+            required>
     </div>
 
     <div class="mb-3">
         <label class="form-label">البريد الإلكتروني</label>
-        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
+        <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($user['email'] ?? '') ?>"
+            required>
     </div>
 
     <div class="mb-3">

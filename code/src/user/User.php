@@ -1,39 +1,32 @@
 <?php
-
 namespace App\user;
 
 use App\config\DatabaseConnection;
 use PDO;
+use App\Utils\AppConstants;
 
 class User {
     
     private $id;
-    
     private $name;
-    
     private $email;
-    
     private $password;
-    
     private $role;
-    
     private $created_at;
-
     private static $conn;
 
-    public function __construct($name, $email, $password, $role) {
+    public function __construct($name, $email, $password, $role, $id = null) {
         self::ensureConnection();
-
         $this->name = $name;
         $this->email = $email;
         $this->password = $password;
         $this->role = $role;
+        $this->id = $id;
     }
 
     public function registerUser(): bool {
         $sql = "INSERT INTO user (name, email, password, role, created_at)
                 VALUES (:name, :email, :password, :role, NOW())";
-
         $stmt = self::$conn->prepare($sql);
         return $stmt->execute([
             ':name' => $this->name,
@@ -43,52 +36,46 @@ class User {
         ]);
     }
 
-    public static function getAll() {
-        self::ensureConnection();
-        
-        $stmt = self::$conn->query("SELECT * FROM user ORDER BY created_at DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function getById($id) {
-        self::ensureConnection();
-        
-        $sql = "SELECT * FROM user WHERE id = ?";
-        $stmt = self::$conn->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
     public static function getUserByEmail($email) {
         self::ensureConnection();
-        
         $sql = "SELECT * FROM user WHERE email = ?";
         $stmt = self::$conn->prepare($sql);
         $stmt->execute([$email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id): bool {
-        $sql = "UPDATE user
-                    SET name = :name, email = :email, role = :role
-                    WHERE id = :id";
-
+    public static function updateUser(int $id, string $name, string $email, string $role, string $status): bool {
+        self::ensureConnection();
+        $sql = "UPDATE user SET name = :name, email = :email, role = :role, status = :status WHERE id = :id";
         $stmt = self::$conn->prepare($sql);
         return $stmt->execute([
-            ':name' => $this->name,
-            ':email' => $this->email,
-            ':role' => $this->role,
+            ':name' => $name,
+            ':email' => $email,
+            ':role' => $role,
+            ':status' => $status,
             ':id' => $id
         ]);
     }
 
-    public static function delete($id): bool {
+    public static function deleteUser(int $id): bool {
         self::ensureConnection();
-        
-        $sql = "DELETE FROM user WHERE id = ?";
+        $sql = "DELETE FROM user WHERE id = :id";
         $stmt = self::$conn->prepare($sql);
-        return $stmt->execute([$id]);
+        return $stmt->execute([':id' => $id]);
     }
+
+    public static function activateAccount(string $email): bool
+    {
+        self::ensureConnection();
+        $sql = "UPDATE user SET status = :status WHERE email = :email";
+        $stmt = self::$conn->prepare($sql);
+        return $stmt->execute([
+            ':status' => AppConstants::STATUS_ACTIVE,
+            ':email' => $email
+        ]);
+    }
+
+
     private static function ensureConnection() {
         if (!self::$conn) {
             self::$conn = DatabaseConnection::getConnection();

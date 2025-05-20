@@ -5,42 +5,43 @@ require_once '../../../vendor/autoload.php';
 
 use App\config\DatabaseConnection;
 use Dotenv\Dotenv;
-use App\utils\AppConstants;
 
 $dotenv = Dotenv::createImmutable(dirname(__DIR__, 3));
 $dotenv->load();
 
-class Utils{
+class Utils
+{
 
     private static $conn;
 
-    private static function ensureConnection() {
+    private static function ensureConnection()
+    {
         if (!self::$conn) {
             self::$conn = DatabaseConnection::getConnection();
         }
     }
 
-    public static function readDatabaseInfo(){
+    public static function readDatabaseInfo()
+    {
         return [
-            'host' => $_ENV['DB_HOST'],      
+            'host' => $_ENV['DB_HOST'],
             'db' => $_ENV['DB_NAME'],
             'user' => $_ENV['DB_USER'],
             'password' => $_ENV['DB_PASSWORD']
         ];
     }
 
-    private static function readAdminInfo(){
-        // echo '<pre>';
-        // print_r($_ENV);
-        // echo '</pre>';
+    private static function readAdminInfo()
+    {
         return [
-            'name' => $_ENV['ADMIN_NAME'],      
+            'name' => $_ENV['ADMIN_NAME'],
             'password' => $_ENV['ADMIN_PASSWORD'],
             'email' => $_ENV['ADMIN_EMAIL']
         ];
     }
 
-    public static function createAdminIfNotExists(): bool {
+    public static function createAdminIfNotExists(): bool
+    {
         self::ensureConnection();
 
         $stmt = self::$conn->prepare("SELECT COUNT(*) FROM user WHERE role = 'ADMIN'");
@@ -48,15 +49,15 @@ class Utils{
         $count = $stmt->fetchColumn();
 
         if ($count == 0) {
-            $adminInfo = self::readAdminInfo(); 
+            $adminInfo = self::readAdminInfo();
 
             $stmt = self::$conn->prepare("INSERT INTO user (name, email, password, role, status)
                                     VALUES (:name, :email, :password, :role, :status)");
 
-            return $stmt->execute([                  
+            return $stmt->execute([
                 ':name' => $adminInfo['name'],
                 ':email' => $adminInfo['email'],
-                ':password' => password_hash($adminInfo['password'], PASSWORD_BCRYPT), 
+                ':password' => password_hash($adminInfo['password'], PASSWORD_BCRYPT),
                 ':role' => 'ADMIN',
                 ':status' => 'ACTIVE'
             ]);
