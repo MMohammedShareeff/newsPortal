@@ -4,19 +4,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-echo "Step 1: before require<br>";
-
 require_once '../../../../vendor/autoload.php';
-
-echo "Step 2: after require<br>";
 
 use App\config\DatabaseConnection;
 
-echo "Step 3: after use<br>";
-
 $pdo = DatabaseConnection::getConnection();
-
-echo "Step 4: after db connection<br>";
 
 ?>
 <!DOCTYPE html>
@@ -119,7 +111,7 @@ echo "Step 4: after db connection<br>";
       'politics' => 'سياسة',
       'health' => 'صحة',
      'economy' => 'اقتصاد',
-   ];
+    ];
 
     $arabicCategoryName = $arabicNames[$categoryName] ?? $categoryName;
 
