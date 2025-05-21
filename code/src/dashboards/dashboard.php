@@ -34,7 +34,7 @@ $editId = $_GET['edit'] ?? null;
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, lightblue);
+            background-color: darkslategray;
         }
 
         h1,
