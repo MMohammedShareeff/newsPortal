@@ -30,6 +30,29 @@ $editId = $_GET['edit'] ?? null;
     <meta charset="UTF-8">
     <title>لوحة تحكم <?= ucfirst(strtolower($role)) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, lightblue);
+        }
+
+        h1,
+        h3 {
+            font-weight: 700;
+            color: 002244;
+        }
+
+        .table th {
+            background-color: #002244;
+            color: white;
+        }
+
+        .table td {
+            background: linear-gradient(to right, whitesmoke, white);
+        }
+    </style>
+
 </head>
 
 <body class="bg-light">
@@ -51,7 +74,7 @@ $editId = $_GET['edit'] ?? null;
 
         <?php if ($role === 'ADMIN'): ?>
             <h3>إدارة المستخدمين</h3>
-            <table class="table table-bordered table-hover align-middle">
+            <table class="table table-bordered table-hover align-middle table-light">
                 <thead class="table-dark">
                     <tr>
                         <th>الاسم</th>
@@ -66,31 +89,39 @@ $editId = $_GET['edit'] ?? null;
                         <tr>
                             <td><?= htmlspecialchars($user['name'] ?? '') ?></td>
                             <td><?= htmlspecialchars($user['email'] ?? '') ?></td>
-                            <td><?= htmlspecialchars($user['status'] ?? '') ?></td>
+                            <td class=><?= htmlspecialchars($user['status'] ?? '') ?></td>
                             <td><?= htmlspecialchars($user['role'] ?? '') ?></td>
                             <td>
-                                <form action="actions/handle.php" method="GET" class="d-inline">
-                                    <input type="hidden" name="action" value="activate_user">
-                                    <input type="hidden" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
-                                    <button class="btn btn-success btn-sm">تفعيل</button>
-                                </form>
+                                <?php if ($user['role'] !== 'ADMIN'): ?>
+                                    <form action="actions/handle.php" method="GET" class="d-inline">
+                                        <input type="hidden" name="action" value="activate_user">
+                                        <input type="hidden" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
+                                        <button class="btn btn-success btn-sm">تفعيل</button>
+                                    </form>
+                                <?php endif; ?>
                                 <a href="?form=edit_user&edit=<?= htmlspecialchars($user['id'] ?? '') ?>"
                                     class="btn btn-warning btn-sm">تعديل</a>
-                                <form action="actions/handle.php" method="GET" class="d-inline">
-                                    <input type="hidden" name="action" value="delete_user">
-                                    <input type="hidden" name="id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
-                                    <button class="btn btn-danger btn-sm">حذف</button>
-                                </form>
+                                <?php if ($user['role'] !== 'ADMIN'): ?>
+                                    <form action="actions/handle.php" method="GET" class="d-inline">
+                                        <input type="hidden" name="action" value="delete_user">
+                                        <input type="hidden" name="id" value="<?= htmlspecialchars($user['id'] ?? '') ?>">
+                                        <button class="btn btn-danger btn-sm">حذف</button>
+                                    </form>
+                                <?php endif; ?>
+
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
 
-            <h3 class="mt-5">إدارة الفئات</h3>
-            <a href="?form=add_category" class="btn btn-primary mb-2">إضافة فئة</a>
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-dark">
+            <div class="d-flex container align-items-stretch gap-2 mt-5">
+                <h3 class="m-0 d-flex align-items-center mb-2">إدارة الفئات</h3>
+                <a href="?form=add_category"
+                    class="btn btn-primary btn-sm d-flex align-items-center justify-content-center mb-2">إضافة فئة</a>
+            </div>
+            <table class="table table-bordered table-hover align-middle table-light">
+                <thead class="table-light">
                     <tr>
                         <th>الاسم</th>
                         <th>الوصف</th>
@@ -118,11 +149,12 @@ $editId = $_GET['edit'] ?? null;
                 </tbody>
             </table>
         <?php endif; ?>
-
+    </div>
+    <div class="container mt-5">
         <?php if ($role == 'AUTHOR'): ?>
             <h3 class="mt-5">أخباري</h3>
-            <a href="?form=add_news" class="btn btn-primary mb-2">إضافة خبر</a>
-            <table class="table table-bordered table-striped align-middle">
+            <a href="?form=add_news" class="btn btn-primary m-2">إضافة خبر</a>
+            <table class="table table-bordered table-striped ">
                 <thead class="table-primary">
                     <tr>
                         <th>العنوان</th>
@@ -153,7 +185,8 @@ $editId = $_GET['edit'] ?? null;
                 </tbody>
             </table>
         <?php endif; ?>
-
+    </div>
+    <div class="container mt-5">
         <?php if ($role === 'EDITOR'): ?>
             <h3 class="mt-5">الأخبار المعلقة</h3>
             <table class="table table-bordered table-hover align-middle">
@@ -230,7 +263,8 @@ $editId = $_GET['edit'] ?? null;
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php endif; ?>
+        </div>
+    <?php endif; ?>
     </div>
 </body>
 
