@@ -10,6 +10,14 @@ use App\config\DatabaseConnection;
 
 $pdo = DatabaseConnection::getConnection();
 
+function limitWords($text, $limit = 50) {
+  $words = explode(' ', $text);
+  if (count($words) <= $limit) {
+      return $text;
+  }
+  return implode(' ', array_slice($words, 0, $limit)) . '…';
+}
+
 ?>
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -126,30 +134,34 @@ $pdo = DatabaseConnection::getConnection();
       $first = array_shift($news);
       echo '
        <div class="col-sm-8">
+          <a href="details.php?news_id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
            <div class="card-body">
                  <img src="' . $first['image_url'] . '" alt="image" class="card-img-top" />
                 <div class="mb-3 mt-2">' . $arabicCategoryName . ' - ' . $first['country'] . '</div>
                <div class="content card-text">
                     <h2 class="pb-4">' . $first['title'] . '</h2>
-                   <p>' . $first['body'] . '</p>
+                   <p style="font-size: 30px;">' . $first['body'] . '</p>
                </div>
             </div>
+          </a>
        </div>
-        ';
+      ';
     }
 
     echo '<div class="col-sm-4">';
     for ($i = 0; $i < 2 && !empty($news); $i++) {
       $item = array_shift($news);
       echo '
-        <div class="card-body">
-             <img src="' . $item['image_url'] . '" alt="image" class="card-img-top" />
-            <div class="mb-3 mt-2">' . $item['country'] . ' - ' . $arabicCategoryName . '</div>
-            <div class="content card-text">
-                <h2 class="pb-4">' . $item['title'] . '</h2>
-                <p>' . $item['body'] . '</p>
-             </div>
-         </div>
+        <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
+          <div class="card-body">
+              <img src="' . $item['image_url'] . '" alt="image" class="card-img-top" />
+              <div class="mb-3 mt-2">' . $item['country'] . ' - ' . $arabicCategoryName . '</div>
+              <div class="content card-text">
+                  <h2 class="pb-4">' . $item['title'] . '</h2>
+                  <p>' . limitWords($item['body'], 20) . '</p>
+              </div>
+          </div>
+        </a>
         ';
      }
 
@@ -157,15 +169,17 @@ $pdo = DatabaseConnection::getConnection();
        $item = array_shift($news);
       echo '
         <div class="card">
+            <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
              <div class="row card-body">
                 <img class="col-sm-6" src="' . $item['image_url'] . '" alt="photo" />
                  <div class="col-sm-6">
                     <div class="text-muted mb-1">' . $arabicCategoryName . '</div>
-                   <p class="card-text">' . mb_substr($item['body'], 0, 100) . '...</p>
+                   <p class="card-text">' . limitWords($item['body'], 20) . '...</p>
                </div>
            </div>
+           </a>
        </div>
-        ';
+      ';
    }
    echo '</div></div>';
 
@@ -174,16 +188,18 @@ $pdo = DatabaseConnection::getConnection();
       $item = array_shift($news);
       echo '
         <div class="card">
+            <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
              <div class="row card-body">
               <img class="col-sm-4" src="' . $item['image_url'] . '" alt="photo" />
-              <div class="col-sm-6">
+                <div class="col-sm-6">
                    <div class="text-muted mb-2 pt-2">' . $arabicCategoryName . '</div>
                   <div class="card-text">
                       <h5 class="pb-2">' . $item['title'] . '</h5>
-                      <p>' . mb_substr($item['body'], 0, 100) . '...</p>
+                      <p>' . limitWords($item['body'],20) . '...</p>
                   </div>
+                </div>
              </div>
-         </div>
+            </a>
        </div>
          ';
     }
@@ -207,627 +223,7 @@ $pdo = DatabaseConnection::getConnection();
 
   ?>
 
-  <!-- <div class="container3 category sport">
-    <h1 style="width: fit-content" class="pt-3">رياضة</h1>
-    <hr />
 
-    <div class="section mainSection row">
-      <div class="col-sm-8">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class="mb-3 mt-2">رياضة - فلسطين</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class="mb-3 mt-2">فلسطين - رياضة</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-1">رياضة</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-1">رياضة</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="otherNews row">
-      <div class="col-sm-8">
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">رياضة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">رياضة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">رياضة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="adsArea pt-5">
-          <div class="card">
-            <div class="card-body">
-              <img
-                src="./images/sunsetWallpaper.jpg"
-                alt="image"
-                class="card-img-bottom some" />
-              <div class="imgDesc bg-light text-center">AD</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container3 category politics">
-    <h1 style="width: fit-content" class="pt-3">سياسة</h1>
-    <hr />
-
-    <div class="section mainSection row">
-      <div class="col-sm-8">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class="mb-3 mt-2">سياسة - فلسطين</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class="mb-3 mt-2">سياسة - فلسطين</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-1">سياسة</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-1">سياسة</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="otherNews row">
-      <div class="col-sm-8">
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">سياسة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">سياسة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">سياسة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="adsArea pt-5">
-          <div class="card">
-            <div class="card-body">
-              <img
-                src="./images/sunsetWallpaper.jpg"
-                alt="image"
-                class="card-img-bottom some" />
-              <div class="imgDesc bg-light text-center">AD</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container3 category health">
-    <h1 style="width: fit-content" class="pt-3">صحة</h1>
-    <hr />
-
-    <div class="section mainSection row">
-      <div class="col-sm-8">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class="mb-3 mt-2">فلسطين - صحة</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class="mb-3 mt-2">فلسطين - صحة</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-1">صحة</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-1">صحة</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="otherNews row">
-      <div class="col-sm-8">
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">صحة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">صحة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class="text-muted mb-2 pt-2">صحة</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="adsArea pt-5">
-          <div class="card">
-            <div class="card-body">
-              <img
-                src="./images/sunsetWallpaper.jpg"
-                alt="image"
-                class="card-img-bottom some" />
-              <div class="imgDesc bg-light text-center">AD</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container3 category economy">
-    <h1 style="width: fit-content" class="pt-3">اقتصاد</h1>
-    <hr />
-
-    <div class="section mainSection row">
-      <div class="col-sm-8">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class=" mb-3 mt-2">فلسطين - اقتصاد</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="card-body">
-          <img
-            src="./images/sunsetWallpaper.jpg"
-            alt="image"
-            class="card-img-top" />
-          <div class=" mb-3 mt-2">فلسطين - اقتصاد</div>
-          <div class="content card-text">
-            <h2 class="pb-4">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-            </h2>
-            <p class="">
-              هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم توليد
-              هذا النص من مولد النص العربى، حيث يمكنك أن تولد مثل هذا النص أو
-              العديد من النصوص الأخرى إضافة إلى زيادة عدد الحروف التى يولدها
-              التطبيق.
-            </p>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class=" text-muted mb-1">اقتصاد</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-6"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class=" text-muted mb-1">اقتصاد</div>
-              <p class="card-text">
-                هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                توليد هذا النص من مولد النص العربى،
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="otherNews row">
-      <div class="col-sm-8">
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class=" text-muted mb-2 pt-2">اقتصاد</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class=" text-muted mb-2 pt-2">اقتصاد</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row card-body">
-            <img
-              class="col-sm-4"
-              src="./images/sunsetWallpaper.jpg"
-              alt="photo" />
-            <div class="col-sm-6">
-              <div class=" text-muted mb-2 pt-2">اقتصاد</div>
-              <div class="card-text">
-                <h5 class="pb-2">
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة
-                </h5>
-                <p>
-                  هذا النص هو مثال لنص يمكن أن يستبدل في نفس المساحة، لقد تم
-                  توليد هذا النص من مولد النص العربى،
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        <div class="adsArea pt-5">
-          <div class="card">
-            <div class="card-body">
-              <img
-                src="./images/sunsetWallpaper.jpg"
-                alt="image"
-                class="card-img-bottom some" />
-              <div class="imgDesc bg-light text-center">AD</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-   <script src="./categorySelector.js"></script>
 </body>
 <div class="footer bg-light border-top" style="padding: 0; margin: 0">
   <div class="container2">
