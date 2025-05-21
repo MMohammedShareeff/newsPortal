@@ -48,7 +48,7 @@ class DashboardController
     private static function getAllUsers()
     {
         self::ensureConnection();
-        $stmt = self::$conn->query("SELECT id, name, email, status, role FROM user ORDER BY created_at DESC");
+        $stmt = self::$conn->query("SELECT id, name, email, status, role FROM user WHERE role != 'ADMIN' ORDER BY created_at DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
