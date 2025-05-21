@@ -163,7 +163,7 @@ function limitWords($text, $limit = 50) {
   <div class="mainSection section mt-4">
     <div class="row">
       <div class="col-sm-5">
-        <a href="details-page.php?news_id=<?= urlencode($mainNews['id']) ?>" class="text-decoration-none; color: inherit;">
+        <a href="details.php?news_id=<?= urlencode($mainNews['id']) ?>" class="text-decoration-none; color: inherit;">
           <div class="card bg-dark" style="height: 100%">
             <img
               src="<?= htmlspecialchars($mainNews['image_url']) ?>"
@@ -193,7 +193,7 @@ function limitWords($text, $limit = 50) {
                 $limitedBody = limitWords($news['body'], 20);
                 echo '
                   <div class="col-sm-6">
-                    <a href="details-page.php?id=' . urlencode($news['id']) . '" style="text-decoration: none; color: inherit;">
+                    <a href="details.php?news_id=' . urlencode($news['id']) . '" style="text-decoration: none; color: inherit;">
                       <div class="card">
                         <img src="' . $news['image_url'] . '" alt="image" class="card-img-top" />
                         <div class="card-body">
@@ -219,7 +219,7 @@ function limitWords($text, $limit = 50) {
       <ul class="mostReadedList ps-0">
         <?php foreach ($mostRead as $i => $item): ?>
             <li class="list-group-item">
-              <a href="details-page.php?news_id=<?= urlencode($item['id']) ?>" class="text-decoration-none; color: inherit;">
+              <a href="details.php?news_id=<?= urlencode($item['id']) ?>" class="text-decoration-none; color: inherit;">
                 <?= htmlspecialchars(limitWords($item['title'], 20)) ?>
               </a>
             </li>
@@ -234,7 +234,7 @@ function limitWords($text, $limit = 50) {
       <ul class="mostReadedList ps-0">
         <?php foreach ($mostCommented as $i => $item): ?>
           <li class="list-group-item">
-            <a href="details-page.php?news_id=<?= urlencode($item['id']) ?>" class="text-decoration-none; color: inherit;">
+            <a href="details.php?news_id=<?= urlencode($item['id']) ?>" class="text-decoration-none; color: inherit;">
               <?= htmlspecialchars(limitWords($item['title'], 20)) ?>
             </a>
           </li>
@@ -267,7 +267,7 @@ function limitWords($text, $limit = 50) {
         $first = array_shift($politicsNews);
         echo '
           <div class="col-sm-6 mianSectoinNew">
-            <a href="details-page.php?id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
+            <a href="details.php?news_id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
               <div class="card" style="width: 100%; height: 100%">
                 <img
                   src="' . htmlspecialchars($first['image_url']) . '"
@@ -289,7 +289,7 @@ function limitWords($text, $limit = 50) {
         foreach ($row as $item) {
             echo '
               <div class="col-sm-6">
-                <a href="details-page.php?id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
+                <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
                   <div class="card" style="width: 100%">
                     <img
                       src="' . htmlspecialchars($item['image_url']) . '"
@@ -333,7 +333,7 @@ function limitWords($text, $limit = 50) {
         $first = array_shift($economyNews);
         echo '
           <div class="col-sm-6 mianSectoinNew">
-            <a href="details-page.php?id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
+            <a href="details.php?news_id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
               <div class="card" style="width: 100%; height: 100%">
                 <img
                   src="' . htmlspecialchars($first['image_url']) . '"
@@ -355,7 +355,7 @@ function limitWords($text, $limit = 50) {
         foreach ($row as $item) {
             echo '
               <div class="col-sm-6">
-                <a href="details-page.php?id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
+                <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
                   <div class="card" style="width: 100%">
                     <img
                       src="' . htmlspecialchars($item['image_url']) . '"
@@ -398,7 +398,7 @@ function limitWords($text, $limit = 50) {
         $first = array_shift($sportNews);
         echo '
           <div class="col-sm-6 mianSectoinNew">
-            <a href="details-page.php?id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
+            <a href="details.php?news_id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
               <div class="card" style="width: 100%; height: 100%">
                 <img
                   src="' . htmlspecialchars($first['image_url']) . '"
@@ -420,7 +420,7 @@ function limitWords($text, $limit = 50) {
         foreach ($row as $item) {
             echo '
               <div class="col-sm-6">
-                <a href="details-page.php?id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
+                <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
                   <div class="card" style="width: 100%">
                     <img
                       src="' . htmlspecialchars($item['image_url']) . '"
@@ -463,7 +463,7 @@ function limitWords($text, $limit = 50) {
         $first = array_shift($healthNews);
         echo '
           <div class="col-sm-6 mianSectoinNew">
-            <a href="details-page.php?id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
+            <a href="details.php?news_id=' . urlencode($first['id']) . '" style="text-decoration: none; color: inherit;">
               <div class="card" style="width: 100%; height: 100%">
                 <img
                   src="' . htmlspecialchars($first['image_url']) . '"
@@ -485,7 +485,7 @@ function limitWords($text, $limit = 50) {
         foreach ($row as $item) {
             echo '
               <div class="col-sm-6">
-                <a href="details-page.php?id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
+                <a href="details.php?news_id=' . urlencode($item['id']) . '" style="text-decoration: none; color: inherit;">
                   <div class="card" style="width: 100%">
                     <img
                       src="' . htmlspecialchars($item['image_url']) . '"
