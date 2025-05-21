@@ -49,40 +49,77 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 
 <head>
-    <title><?= ucfirst($mode) ?></title>
+    <meta charset="UTF-8">
+    <title><?= ucfirst($mode) ?> | بوابة الأخبار</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="FrontPage/css/login.css">
 </head>
 
 <body>
-    <h1><?= ucfirst($mode) ?> Page</h1>
 
-    <?php if ($mode === 'register'): ?>
-        <form method="POST">
-            <input type="hidden" name="action" value="register">
-            <input type="text" name="name" placeholder="Name" required><br>
-            <input type="email" name="email" placeholder="Email" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
-            <label for="account-type">choose account type</label>
-            <select name="account-type" id="account-type">
-                <option value="" disabled>role</option>
-                <option value="author" selected>author</option>
-                <option value="editor">editor</option>
-            </select>
-            <button type="submit">Register</button>
-        </form>
-        <p>Already have an account? <a href="?mode=login">Login here</a></p>
+    <div class="container">
+        <div class="auth-card">
+            <h2 class="auth-title"><?= $mode === 'register' ? 'تسجيل حساب جديد' : 'تسجيل الدخول' ?></h2>
 
-    <?php else: ?>
-        <form method="POST">
-            <input type="hidden" name="action" value="login">
-            <input type="email" name="email" placeholder="Email" required><br>
-            <input type="password" name="password" placeholder="Password" required><br>
-            <button type="submit">Login</button>
-        </form>
-        <p>No account? <a href="?mode=register">Register here</a></p>
-    <?php endif; ?>
+            <?php if ($mode === 'register'): ?>
+                <form method="POST">
+                    <input type="hidden" name="action" value="register">
+
+                    <div class="mb-3">
+                        <label class="form-label">الاسم</label>
+                        <input type="text" name="name" class="form-control" placeholder="الاسم الكامل" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">كلمة المرور</label>
+                        <input type="password" name="password" class="form-control" placeholder="********" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">نوع الحساب</label>
+                        <select name="account-type" class="form-select" required>
+                            <option value="" disabled selected>اختر النوع</option>
+                            <option value="author">كاتب</option>
+                            <option value="editor">محرر</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">تسجيل</button>
+                    <a href="?mode=login" class="switch-link">هل لديك حساب؟ تسجيل الدخول</a>
+                </form>
+
+            <?php else: ?>
+                <form method="POST">
+                    <input type="hidden" name="action" value="login">
+
+                    <div class="mb-3">
+                        <label class="form-label">البريد الإلكتروني</label>
+                        <input type="email" name="email" class="form-control" placeholder="email@example.com" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">كلمة المرور</label>
+                        <input type="password" name="password" class="form-control" placeholder="********" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 ">دخول</button>
+                    <a href="?mode=register" class="switch-link">ليس لديك حساب؟ أنشئ حسابًا الآن</a>
+                </form>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
