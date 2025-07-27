@@ -44,9 +44,6 @@ switch ($action) {
         break;
 
     case 'update_news':
-        if ($_SESSION['role'] !== 'EDITOR') {
-            die('غير مسموح بالوصول');
-        }
         $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
         if ($id === false || $id <= 0) {
             die('معرف الأخبار غير صالح');

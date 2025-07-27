@@ -22,13 +22,15 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
         $user = User::getUserByEmail($email);
         if ($user['status'] !== 'ACTIVE') {
             echo 'the admin did not activate your account yet!!';
-        } elseif ($user && password_verify($password, $user['password'])) {
+        } 
+        elseif ($user && password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['username'] = $user['username'];
             header("Location: ../dashboards/Dashboard.php");
             exit();
-        } else {
+        } 
+        else {
             echo "Invalid email or password";
         }
 
@@ -41,7 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
         $user = new User($name, $email, $password, $role);
         if (!$user->registerUser()) {
             echo 'something wrong happend, failed to register your account';
-        } else {
+        } 
+        else {
             header("Location: login.php");
         }
     }

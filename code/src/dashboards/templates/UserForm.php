@@ -36,16 +36,14 @@ if (!$user) {
             required>
     </div>
 
-    <?php if ($user['role'] !== 'ADMIN'): ?>
-        <div class="mb-3">
-            <label class="form-label">الدور</label>
-            <select name="role" class="form-select">
-                <option value="AUTHOR" <?= ($user['role'] ?? '') === 'AUTHOR' ? 'selected' : '' ?>>مؤلف</option>
-                <option value="EDITOR" <?= ($user['role'] ?? '') === 'EDITOR' ? 'selected' : '' ?>>محرر</option>
-                <option value="ADMIN" <?= ($user['role'] ?? '') === 'ADMIN' ? 'selected' : '' ?>>مدير</option>
-            </select>
-        </div>
-    <?php endif; ?>
+    <div class="mb-3">
+        <label class="form-label">الدور</label>
+        <select name="role" class="form-select">
+            <option value="AUTHOR" <?= ($user['role'] ?? '') === 'AUTHOR' ? 'selected' : '' ?>>مؤلف</option>
+            <option value="EDITOR" <?= ($user['role'] ?? '') === 'EDITOR' ? 'selected' : '' ?>>محرر</option>
+            <option value="ADMIN" <?= ($user['role'] ?? '') === 'ADMIN' ? 'selected' : '' ?>>مدير</option>
+        </select>
+    </div>
 
     <div class="mb-3">
         <label class="form-label">الحالة</label>
